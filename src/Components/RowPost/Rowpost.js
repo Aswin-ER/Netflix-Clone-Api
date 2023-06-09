@@ -1,7 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import "./Rowpost.css"
+import axios from '../../axios';
 
 function Rowpost() {
+
+    const [movies, setMovies] = useState([]);
+
+    useEffect(()=> {
+        axios.get()
+    }, [])
+
   return (
     <div className='row'>
         <h2>Title</h2>
