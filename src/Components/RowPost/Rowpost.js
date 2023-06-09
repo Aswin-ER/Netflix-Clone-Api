@@ -1,20 +1,34 @@
 import React, { useEffect, useState } from 'react'
 import "./Rowpost.css"
 import axios from '../../axios';
+import { imageUrl } from '../../Constants/constants';
 
-function Rowpost() {
+function Rowpost(props) {
 
     const [movies, setMovies] = useState([]);
 
     useEffect(()=> {
-        axios.get()
+        axios.get(props.url).then((response)=> {
+            setMovies(response.data.results)
+        })
     }, [])
+
+    const handleMovie = () => {
+
+    }
 
   return (
     <div className='row'>
-        <h2>Title</h2>
+        <h2>{props.title}</h2>
         <div className='posters'>
-        <img className='poster' alt='poster' src='https://images.squarespace-cdn.com/content/v1/59232e19579fb3fa44a693c2/1589212826160-UM9PEPGOS3OJPR0FJ81X/ke17ZwdGBToddI8pDm48kHZUaJeKzodyg_sXWBMxNTdZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZUJFbgE-7XRK3dMEBRBhUpxCBUU7B-_SAG1kGvCwYgmUjQXvn8_OJjtz3K1llMQBa1MPsuSXPSY3X-tgg78M7lI/SKOyqL1qFLIhbK6ho2lB-696x975.jpg?format=1500w'/>
+            {movies.map((obj)=> {
+                return(
+                    <div>
+                        <img onClick={()=> {handleMovie(obj.id)}} className={props.isSmall ? "smallPoster" : "poster" } alt='' src={`${imageUrl+obj.backdrop_path}`}/>
+                        <div className='image-text'>{obj.title || obj.original_name}</div>
+                    </div>
+                )
+            })}
         </div>
     </div>
   )
