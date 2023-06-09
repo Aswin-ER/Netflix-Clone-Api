@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import "./Rowpost.css"
 import axios from '../../axios';
-import { imageUrl } from '../../Constants/constants';
+import { API_key, imageUrl } from '../../Constants/constants';
+import Youtube from 'react-youtube';
 
 function Rowpost(props) {
 
     const [movies, setMovies] = useState([]);
+
+    const [trailer, setTrailer] = useState('');
+
+    const [ShowVideoPlayer, setShowVideoPlayer] = useState(true)
 
     useEffect(()=> {
         axios.get(props.url).then((response)=> {
@@ -13,8 +18,33 @@ function Rowpost(props) {
         })
     }, [])
 
-    const handleMovie = () => {
+    const handleMovie = (id) => {
+        axios.get(`/movie/${id}/videos?api_key=${API_key}&language=en-US`).then((response)=> {
+            if (response.data.results.length > 0) {
+                response.data.results.forEach(result => {
+                  if (result.type === 'Trailer') {
+                    setShowVideoPlayer(true);
+                    setTrailer(result);
+                    return; 
+                  }
+                });
+              } else {
+                console.log("Empty response");
+              }
+        })
 
+    }
+
+    const opts = {
+        height: '450',
+        width: '100%',
+        playerVars: {
+            autoplay: 0
+        }
+    }
+
+    const handleCloseVideo = () => {
+        setShowVideoPlayer(false);
     }
 
   return (
@@ -30,6 +60,12 @@ function Rowpost(props) {
                 )
             })}
         </div>
+        {trailer && ShowVideoPlayer && (
+            <div>
+                <Youtube videoId={trailer.key} opts={opts} />
+                <button className='close-button' onClick={handleCloseVideo}> Close Video</button>
+            </div>
+        )}  
     </div>
   )
 }
